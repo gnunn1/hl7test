@@ -1,8 +1,0 @@
-metadata:
-  name: hl7test
-
-spec:
-  ports:
-    - port: 8888
-      targetPort: 8888
-      protocol: "TCP"
