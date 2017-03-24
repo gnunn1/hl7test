@@ -1,8 +1,13 @@
-# Spring-Boot and Camel XML QuickStart
+# FIS 2.0 HL7/MLLP External Access on Openshift
 
-This example demonstrates how to configure Camel routes in Spring Boot via a Spring XML configuration file.
+This is an example of exposing HL7/MLLP from Openshift to external consumers using FIS 2.0. In Openshift, routers do not support MLLP traffic since it is TCP based rather then HTTP. It would be possible to tunnel MLLP using TLS pass-through but it's pretty rare to see healthcare systems using MLLP with TLS.
 
-The application utilizes the Spring [`@ImportResource`](http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/context/annotation/ImportResource.html) annotation to load a Camel Context definition via a [camel-context.xml](src/main/resources/spring/camel-context.xml) file on the classpath.
+This project contains of a very simple camel route that accepts HL7 traffic and logs it. Two service files are provided:
+
+* ```hl7test-external-nodeport.yml```. This exposes the service using a nodeport and can be used with Minishift to expose MLLP pods to the outside world.
+* ```hl7test-external-loadbalancer.yml```. This creates a loadbalancer service when running in cloud environments, I've only tested it with AWS.
+
+To create the desired service, just use the ```oc create -f hl7test-external-xxxx.yml``` command, obviously deploy the example first though.
 
 ### Building
 
@@ -29,29 +34,3 @@ Then find the name of the pod that runs this quickstart, and output the logs fro
     oc logs <name of pod>
 
 You can also use the OpenShift [web console](https://docs.openshift.com/container-platform/3.3/getting_started/developers_console.html#developers-console-video) to manage the running pods, and view logs and much more.
-
-### Running via an S2I Application Template
-
-Application templates allow you deploy applications to OpenShift by filling out a form in the OpenShift console that allows you to adjust deployment parameters.  This template uses an S2I source build so that it handle building and deploying the application for you.
-
-First, import the Fuse image streams:
-
-    oc create -f https://raw.githubusercontent.com/jboss-fuse/application-templates/GA/fis-image-streams.json
-
-Then create the quickstart template:
-
-    oc create -f https://raw.githubusercontent.com/jboss-fuse/application-templates/GA/quickstarts/spring-boot-camel-xml-template.json
-
-Now when you use "Add to Project" button in the OpenShift console, you should see a template for this quickstart. 
-
-
-### Integration Testing
-
-The example includes a [fabric8 arquillian](https://github.com/fabric8io/fabric8/tree/v2.2.170.redhat/components/fabric8-arquillian) OpenShift Integration Test. 
-Once the container image has been built and deployed in OpenShift, the integration test can be run with:
-
-    mvn test -Dtest=*KT
-
-The test is disabled by default and has to be enabled using `-Dtest`. Open Source Community documentation at [Integration Testing](https://fabric8.io/guide/testing.html) and [Fabric8 Arquillian Extension](https://fabric8.io/guide/arquillian.html) provide more information on writing full fledged black box integration tests for OpenShift. 
-
-
