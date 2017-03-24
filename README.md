@@ -34,3 +34,22 @@ Then find the name of the pod that runs this quickstart, and output the logs fro
     oc logs <name of pod>
 
 You can also use the OpenShift [web console](https://docs.openshift.com/container-platform/3.3/getting_started/developers_console.html#developers-console-video) to manage the running pods, and view logs and much more.
+
+### Testing the example
+
+To test the example, you can use the HapiTestPanel which is available here http://hl7api.sourceforge.net/hapi-testpanel/.
+
+For the Nodeport example, it exposes a port on 31450. You can use the ```minishift openshift svc list``` command to see the IP address to use to access the port.
+
+On AWS, an ELB will be created automatically. I mapped that ELB to a DNS record in Route 53 and then used that to access the service on port 8888.
+
+### Troubleshooting AWS
+
+If you are using the reference architecture in AWS, you will run into a problem where creating the loadbalancer service doesn't work. If you do an ```oc describe svc hl7test-external``` you will see the following error:
+```
+Error creating load balancer (will retry): Failed to create load balancer for service hl7test/hl7test-external: Multiple tagged security groups found for instance i-04cf63acf18d31850; ensure only the k8s security group is tagged
+```
+
+The Openshift AWS reference architecture creates two security groups for the Openshift Infra nodes and both groups are tagged with the ```KubernetesCluster``` attribute. There is a Kubernetes open issue talking about the problem here (https://github.com/kubernetes/kubernetes/issues/26787).
+
+You can workaround it by removing the KubernetesCluster tag from the ```ose_infra_node_sg``` security group.
