@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: hl7test
+    project: hl7test
+  name: hl7test-external
+spec:
+  ports:
+  - nodePort: 31450 
+    port: 8888
+    protocol: TCP
+    targetPort: 8888
+  selector:
+    group: com.redhat.demo
+    project: hl7test
+    provider: fabric8  
+  sessionAffinity: None
+  type: NodePort

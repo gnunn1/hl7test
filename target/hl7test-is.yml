@@ -1,0 +1,15 @@
+---
+apiVersion: "v1"
+kind: "List"
+items:
+- apiVersion: "v1"
+  kind: "ImageStream"
+  metadata:
+    name: "hl7test"
+  spec:
+    tags:
+    - from:
+        kind: "ImageStreamImage"
+        name: "hl7test@sha256:e21b1f86eb2f9fd8789f9928760e293ad820013b095e34ba3e32362d738df424"
+        namespace: "hl7test"
+      name: "latest"
